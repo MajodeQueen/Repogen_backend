@@ -1,0 +1,28 @@
+{
+  "name": "repogen_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.11.3",
+    "@graphql-tools/merge": "^9.0.2-rc-20240220122605-d8655e3ff72841f5ab2c62aea581a0a43c5df45f",
+    "@graphql-tools/schema": "^10.0.16",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "graphql": "^16.10.0",
+    "graphql-middleware": "^6.1.35",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.12.0",
+    "mongoose": "^8.9.5",
+    "nodemailer": "^6.9.16",
+    "nodemon": "^3.1.9"
+  }
+}
