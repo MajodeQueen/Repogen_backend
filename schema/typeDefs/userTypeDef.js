@@ -9,7 +9,6 @@ type LoginResponse {
   success: Boolean!
   message: String!
   user: User
-  token: String
   businessId: String
   isAdmin:Boolean
 }

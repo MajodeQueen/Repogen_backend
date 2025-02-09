@@ -12,6 +12,11 @@ const DebtsDataSchema = new mongoose.Schema(
       ref: 'Business',
       required: true,
     },
+    saleID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Sales',
+      required: true,
+    },
     debtStatus:String
   },
   {

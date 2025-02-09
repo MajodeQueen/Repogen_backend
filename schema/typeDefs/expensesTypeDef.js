@@ -19,8 +19,20 @@ type AddExpenseResponse {
   expense: Expenses
 }
 
+type MonthlyExpenses {
+  month: String!
+  totalAmount: Float!
+}
+
+type MonthlyExpensesResponse {
+  success: Boolean!
+  message: String!
+  data: [MonthlyExpenses]!
+}
+
 type Query {
   allExpenses: ExpensesResponse!
+  getMonthlyExpenses(year: Int!): MonthlyExpensesResponse!
 }
 
 type Mutation {

@@ -18,7 +18,6 @@ const SalesSchema = new mongoose.Schema(
     },
     paymentMode: String,
   },
-
   {
     timestamps: true,
   }

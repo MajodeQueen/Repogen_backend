@@ -14,6 +14,13 @@ type DebtsResponse {
   debts: [Debts]
 }
 
+type UpdateDebtPaymentResponse {
+  success: Boolean!
+  message: String!
+  debt: Debts  
+}
+
+
 type AddDebtResponse {
   success: Boolean!
   message: String!
@@ -26,6 +33,12 @@ type Query {
 
 type Mutation {
   addDebts(input: DebtsInput!): AddDebtResponse!
+  updateDebtPayment(input: UpdateDebtPaymentInput!): UpdateDebtPaymentResponse!
+}
+
+input UpdateDebtPaymentInput {
+  debtId: String!           
+  amountPaid: Float!
 }
 
 input DebtsInput {

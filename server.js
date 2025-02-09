@@ -16,6 +16,7 @@ const jwt = require('jsonwebtoken');
 const Business = require('./models/businessModel.js');
 
 
+
 dotenv.config();
 
 // MongoDB connection
@@ -39,70 +40,83 @@ const server = new ApolloServer({
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
 
-// Authentication middleware
+app.use(cookieParser());
+app.use(bodyParser.json());
 app.use(
   cors({
     credentials: true,
     origin: ['http://localhost:3000', 'http://localhost:4000/graphql'],
   })
 );
-
 app.use(async (req, res, next) => {
   try {
-    if (req.path === '/login' || req.path.startsWith('/public')) {
-      return next(); // Skip authentication
+    const authCookie = req.cookies.auth;
+
+    // If no auth cookie is present, allow the request to proceed
+    if (!authCookie) {
+      console.log('No auth cookie found. Proceeding without authentication.');
+      return next();
     }
 
-    const authorization = req.headers.authorization;
-    const businessId = req.headers['x-business-id'];
-    console.log('busiess', businessId);
+    let token, BusinessId;
 
-    if (authorization && businessId) {
-      const token = authorization.slice(7); // Extract token
-      const business = await Business.findById(businessId); // Ensure async is awaited
+    // Try to parse the auth cookie
+    try {
+      const parsedCookie = JSON.parse(authCookie);
+      token = parsedCookie.token;
+      BusinessId = parsedCookie.BusinessId;
+    } catch (error) {
+      console.error('Failed to parse auth cookie:', error.message);
+      throw new Error('Invalid auth cookie: Failed to parse');
+    }
 
-      if (!business) {
-        return next(); // Proceed if business is not found
+    // Validate token and BusinessId
+    if (!token || !BusinessId) {
+      throw new Error('Invalid auth cookie: Missing token or BusinessId');
+    }
+
+    // Fetch the business associated with the BusinessId
+    const business = await Business.findById(BusinessId);
+    if (!business) {
+      throw new Error('Business not found');
+    }
+
+    // Verify the JWT token
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        throw new Error('Invalid or expired token');
       }
 
-      jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) {
-          req.user = null; // Invalid token
-          return next(); // Call next() to proceed
-        }
+      // Check user access to the business
+      const userHasAdminAccess = business.admins.includes(decoded.id);
+      const userHasEditorAccess = business.editors.includes(decoded.id);
 
-        const userHasAdminAccess = business.admins.includes(decoded.id);
-        const userHasEditorAccess = business.editors.includes(decoded.id);
+      if (!userHasAdminAccess && !userHasEditorAccess) {
+        throw new Error('You do not have access to this business account');
+      }
 
-        if (!userHasAdminAccess && !userHasEditorAccess) {
-          return res.status(403).json({
-            error: 'You do not have access to this business account',
-          });
-        }
+      // Attach user and business info to the request object
+      req.user = decoded;
+      req.business = business;
+    });
 
-        req.user = decoded; // Set user info
-        req.business = business; // Set business info
-        return next(); // Proceed to next middleware
-      });
-    } else {
-      next(); // No authorization or business ID, proceed to next middleware
-    }
+    next(); // Proceed to the next middleware or route
   } catch (error) {
-    console.error('Authentication middleware error:', error);
-    next(error); // Pass errors to Express error-handling middleware
+    console.error('Authentication middleware error:', error.message);
+
+    // Allow requests without cookies to proceed, but log the error for debugging
+    res.status(403).json({ error: error.message });
   }
 });
 
-// Middleware for cookies and parsing requests
-app.use(cookieParser());
 
 // Start the server
 async function startServer() {
   await server.start(); // Ensure Apollo Server starts before using the middleware
 
+
   app.use(
     '/graphql',
-    bodyParser.json(),
     expressMiddleware(server, {
       context: async ({ req, res }) => {
         const user = req.user;

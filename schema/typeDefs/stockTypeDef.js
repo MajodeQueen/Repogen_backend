@@ -2,9 +2,9 @@ const StockTypeDef = `#graphql
 type StockData {
   _id: ID!
   name: String,
-  quantity: Float!
+  quantity: Float
   costPrice: Float
-  sellPrice: Float!
+  sellPrice: Float
   date: String,
 }
 
@@ -26,13 +26,25 @@ type Query {
 
 type Mutation {
   addStock(input: StockInput!): AddStockResponse!
+  updateStock(input:UpdateStockInput!):AddStockResponse!
+}
+
+input UpdateStockInput {
+  stockId: String!
+  quantity: Float
+  costPrice: Float
+}
+
+input SingleStockInput {
+costPrice:Float
+name:String
+price:Float
+productId:String
+quantity:Float
 }
 
 input StockInput {
-  name: String!
-  quantity: Float!
-  costPrice: Float
-  sellPrice: Float!
+  stockItems:[SingleStockInput!]
   date: String!
 }
 `;

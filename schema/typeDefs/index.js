@@ -5,6 +5,8 @@ const StockTypeDef = require('./stockTypeDef');
 const BusinessTypeDef = require('./businessTypeDef');
 const ExpensesTypeDef = require('./expensesTypeDef');
 const UserTypeDef = require('./userTypeDef');
+const ServiceSalesTypeDef = require('./serviceSalesTypeDef');
+const descriptionTypeDef = require('./serviceDescriptionsDef');
 
 const allTypeDefs = mergeTypeDefs([
   SalesTypeDef,
@@ -13,6 +15,8 @@ const allTypeDefs = mergeTypeDefs([
   UserTypeDef,
   BusinessTypeDef,
   StockTypeDef,
+  ServiceSalesTypeDef,
+  descriptionTypeDef
 ]);
 
 module.exports = allTypeDefs;

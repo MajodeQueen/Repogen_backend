@@ -1,21 +1,21 @@
 const SalesTypeDef = `#graphql
 type SalesData {
   _id: ID!
-  customerName: String!
-  date: String!
-  quantity: Float!
-  productDetails: Stock!
-  amount: Float!
-  paymentMode: String!
+  customerName: String
+  date: String
+  quantity: Float
+  productDetails: Stock
+  amount: Float
+  paymentMode: String
 }
 
 type Stock {
   _id: ID!
-  name: String,
-  quantity: Float!
+  name: String
+  quantity: Float
   costPrice: Float
-  sellPrice: Float!
-  date: String,
+  sellPrice: Float
+  date: String
 }
 
 type SalesResponse {
@@ -30,20 +30,55 @@ type AddSalesResponse {
   sale: SalesData
 }
 
+type GetMonthlySalesStatsResponse{
+ success: Boolean!
+ message: String!
+ year: Float
+ month: Float
+ totalSales: Float
+ totalAmount: Float
+ percentageDifference: Float
+ percentageDifferenceAmount:Float
+}
+
+type MonthlyRevenue {
+  month: String!
+  totalAmount: Float!
+}
+
+type MonthlyRevenueResponse {
+  success: Boolean!
+  message: String!
+  data: [MonthlyRevenue!]!
+}
+
+
 type Query {
   allSales: SalesResponse!
+  getMonthlySalesStats(input: SalesstatsInput!):GetMonthlySalesStatsResponse!
+  getMonthlyRevenue(year: Int!): MonthlyRevenueResponse!
 }
 
 type Mutation {
   addSales(input: SalesInput!): AddSalesResponse!
 }
 
+input SalesstatsInput {
+ month:Float!
+ year:Float!
+}
+
+input SingleProductInput {
+ productId: String!
+  quantity: Float!
+  price: Float!
+}
+
+
 input SalesInput {
   customerName: String!
   date: String!
-  quantity: Float!
-  productDetails: String!
-  amount: Float!
+  saleItems:[SingleProductInput]!
   paymentMode: String!
 }
 `;
