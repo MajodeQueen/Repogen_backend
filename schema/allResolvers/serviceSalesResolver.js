@@ -428,106 +428,100 @@ const ServicesSalesResolver = {
                 };
             }
         },
-        getProductPerformanceBasedOnNoOfSales: async (_, { input }, contextValue) => {
-            const { month, year, type } = input; // type can be 'monthly', 'annual', or 'weekly'
 
-            try {
-                const { business } = contextValue;
+        // getProductPerformanceBasedOnNoOfSalesOfWeekYearAndMonth: async (_, { input }, contextValue) => {
+        //     const { month, year, type } = input; // 'type' can be 'monthly', 'annual', or 'weekly'
 
-                // Check if the business context is valid
-                if (!business) {
-                    throw new GraphQLError('Business ID is invalid', {
-                        extensions: { code: 'UNAUTHENTICATED' },
-                    });
-                }
+        //     try {
+        //         const { business } = contextValue;
 
-                // Validate year input
-                if (!year || typeof year !== 'number' || year.toString().length !== 4) {
-                    throw new GraphQLError('Invalid year provided', {
-                        extensions: { code: 'BAD_USER_INPUT' },
-                    });
-                }
+        //         // Validate business context
+        //         if (!business) {
+        //             throw new GraphQLError('Business ID is invalid', {
+        //                 extensions: { code: 'UNAUTHENTICATED' },
+        //             });
+        //         }
 
-                let salesForPeriod = [];
+        //         // Validate year input
+        //         if (!year || typeof year !== 'number' || year.toString().length !== 4) {
+        //             throw new GraphQLError('Invalid year provided', {
+        //                 extensions: { code: 'BAD_USER_INPUT' },
+        //             });
+        //         }
 
-                // Handle different types of queries: monthly, annual, weekly
-                if (type === 'monthly' && month) {
-                    // Query for monthly sales performance
-                    salesForPeriod = await ServiceSales.find({
-                        business,
-                        $expr: {
-                            $and: [
-                                { $eq: [{ $year: { $toDate: '$date' } }, year] },
-                                { $eq: [{ $month: { $toDate: '$date' } }, month] },
-                            ],
-                        },
-                    });
+        //         let salesForPeriod = [];
 
-                } else if (type === 'annual') {
-                    // Query for annual sales performance
-                    salesForPeriod = await ServiceSales.find({
-                        business,
-                        $expr: { $eq: [{ $year: { $toDate: '$date' } }, year] },
-                    });
+        //         // Handle different query types: monthly, annual, weekly
+        //         if (type === 'monthly' && month) {
+        //             // Query for monthly sales
+        //             salesForPeriod = await ServiceSales.find({
+        //                 business,
+        //                 $expr: {
+        //                     $and: [
+        //                         { $eq: [{ $year: { $toDate: '$date' } }, year] },
+        //                         { $eq: [{ $month: { $toDate: '$date' } }, month] },
+        //                     ],
+        //                 },
+        //             });
+        //         } else if (type === 'annual') {
+        //             // Query for annual sales
+        //             salesForPeriod = await ServiceSales.find({
+        //                 business,
+        //                 $expr: { $eq: [{ $year: { $toDate: '$date' } }, year] },
+        //             });
+        //         } else if (type === 'weekly' && month) {
+        //             // Query for weekly sales performance within a specific month and year
+        //             salesForPeriod = await ServiceSales.find({
+        //                 business,
+        //                 $expr: {
+        //                     $and: [
+        //                         { $eq: [{ $year: { $toDate: '$date' } }, year] },
+        //                         { $eq: [{ $month: { $toDate: '$date' } }, month] },
+        //                     ],
+        //                 },
+        //             });
 
-                } else if (type === 'weekly' && month) {
-                    // Query for weekly sales performance within a specific month and year
-                    salesForPeriod = await ServiceSales.find({
-                        business,
-                        $expr: {
-                            $and: [
-                                { $eq: [{ $year: { $toDate: '$date' } }, year] },
-                                { $eq: [{ $month: { $toDate: '$date' } }, month] },
-                            ],
-                        },
-                    });
+        //             // Group by week of the month
+        //             const weeklyPerformance = salesForPeriod.reduce((acc, sale) => {
+        //                 const date = new Date(sale.date);
+        //                 if (!isNaN(date)) {
+        //                     const weekOfMonth = Math.ceil(date.getDate() / 7); // Week number in the month
+        //                     if (!acc[weekOfMonth]) acc[weekOfMonth] = { totalAmount: 0, count: 0, items: [] };
+        //                     acc[weekOfMonth].totalAmount += sale.amount;
+        //                     acc[weekOfMonth].count += 1;
+        //                     acc[weekOfMonth].items.push(sale);
+        //                 }
+        //                 return acc;
+        //             }, {});
 
-                    // Group sales by week of the month
-                    const weeklyPerformance = {};
-
-                    salesForPeriod.forEach((sale) => {
-                        const date = new Date(sale.date);
-                        if (!isNaN(date)) {
-                            const weekOfMonth = Math.ceil(date.getDate() / 7); // Get the week number in the month
-                            if (!weeklyPerformance[weekOfMonth]) {
-                                weeklyPerformance[weekOfMonth] = { totalAmount: 0, count: 0, items: [] };
-                            }
-                            weeklyPerformance[weekOfMonth].totalAmount += sale.amount;
-                            weeklyPerformance[weekOfMonth].count += 1;
-                            weeklyPerformance[weekOfMonth].items.push(sale);
-                        }
-                    });
-
-                    // Convert the weekly performance into an array
-                    salesForPeriod = Object.keys(weeklyPerformance).map((week) => ({
-                        weekOfMonth: parseInt(week),
-                        totalAmount: weeklyPerformance[week].totalAmount,
-                        count: weeklyPerformance[week].count,
-                        items: weeklyPerformance[week].items,
-                    }));
-                }
-
-                // Now summarize the data
-                const servicePerformanceAccordingToSales = summarizePayments(salesForPeriod);
-
-                return {
-                    success: true,
-                    message: `${type.charAt(0).toUpperCase() + type.slice(1)} service revenue for ${year} retrieved successfully`,
-                    servicePerformanceAccordingToSales: servicePerformanceAccordingToSales
-                };
-
-            } catch (err) {
-                console.error(err);
-                return {
-                    success: false,
-                    message: err.message || 'Internal server error',
-                    servicePerformanceAccordingToSales: null
-                };
-            }
-        }
+        //             // Convert to array
+        //             salesForPeriod = Object.keys(weeklyPerformance).map(week => ({
+        //                 weekOfMonth: parseInt(week),
+        //                 totalAmount: weeklyPerformance[week].totalAmount,
+        //                 count: weeklyPerformance[week].count,
+        //                 items: weeklyPerformance[week].items,
+        //             }));
+        //         }
 
 
-    },
+        //         // Summarize the sales data
+        //         const servicePerformanceAccordingToSales = type === 'weekly' ? salesForPeriod : summarizePayments(salesForPeriod);
+
+        //         return {
+        //             success: true,
+        //             message: `${type.charAt(0).toUpperCase() + type.slice(1)} service revenue for ${year} retrieved successfully`,
+        //             servicePerformanceAccordingToSales,
+        //         };
+        //     } catch (err) {
+        //         console.error(err);
+        //         return {
+        //             success: false,
+        //             message: err.message || 'Internal server error',
+        //             servicePerformanceAccordingToSales: null,
+        //         };
+        //     }
+        // }
+    }
 };
 
 module.exports = ServicesSalesResolver;

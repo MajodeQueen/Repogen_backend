@@ -54,7 +54,12 @@ const BusinessResolver = {
             },
           });
         }
-        const foundBusiness = await Business.findById(business.id);
+        const foundBusiness = await Business.findById(business.id)
+          .populate({
+            path: 'admins',  // Populate the admins field
+            select: 'username email' // Specify the fields to return (e.g., username, email)
+          });
+
         if (!foundBusiness) {
           throw new GraphQLError(
             'Business is not a registered user of Repogen',

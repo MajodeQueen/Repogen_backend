@@ -128,26 +128,39 @@ const UserResolver = {
     },
   },
 
+
+
   Query: {
     Me: async (_, __, contextValue) => {
       try {
-        const { user } = contextValue;
-        if (!user) {
-          throw new Error('No user found');
+        const { user,business } = contextValue;
+        if (!user || !business) {
+          return {
+          success: false,
+          message: 'Has no access',
+          user: null,
+          adminAccess:null
+        };
         }
         const actualUser = await User.findById(user.id);
+        const actualBusiness = await Business.findById(business.id)
+        const userHasAdminAccess = actualBusiness.admins.includes(user.id);
         return {
           success: true,
           message: 'User data retrieved successfully',
           user: actualUser,
+          adminAccess:userHasAdminAccess
         };
       } catch (err) {
         return {
           success: false,
           message: err.message || 'Internal server error',
+          user: null,
+          adminAccess:null
         };
       }
     },
+    
   },
 };
 

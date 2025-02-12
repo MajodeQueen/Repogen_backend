@@ -17,6 +17,7 @@ type MeResponse {
   success: Boolean!
   message: String!
   user: User
+  adminAccess:Boolean
 }
 
 type Mutation {

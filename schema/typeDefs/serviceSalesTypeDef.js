@@ -8,6 +8,12 @@ type ServicesSalesData {
   paymentMode: String
 }
 
+enum PerformanceType {
+  monthly
+  annual
+  weekly
+}
+
 type ServicesSalesResponse {
   success: Boolean!
   message: String!
@@ -67,7 +73,7 @@ type singlePerfomance {
 type getProductPerformanceBasedOnNoOfSalesResponse {
   success: Boolean!
   message: String!
-  servicePerformanceAccordingToSales: [singlePerfomance!]!
+  servicePerformanceAccordingToSales: [singlePerfomance!]
 }
 
 type  getWeeklyDataServiceSalesResponse {
@@ -89,6 +95,19 @@ type WeeklySalesResponse {
   data: [WeeklyData!]
 }
 
+type PerformanceData {
+  weekOfMonth: Int
+  totalAmount: Float
+  count: Int
+  items: [ServicesSalesData]
+}
+
+type ProductPerformanceResponse {
+  success: Boolean!
+  message: String!
+  servicePerformanceAccordingToSales: [PerformanceData]
+}
+
 
 
 type Query {
@@ -98,11 +117,19 @@ type Query {
   getProductPerformanceBasedOnNoOfSales(input:ServiceSalesStatsInput):getProductPerformanceBasedOnNoOfSalesResponse!
   getMonthlyServiceSalesPerDay(input: MonthlyServiceSalesPerDayInput!): MonthlyServiceSalesPerDayResponse!
   getWeeklyDataServiceSales(input: WeeklyDataInput!):WeeklySalesResponse!
+  getProductPerformanceBasedOnNoOfSalesOfWeekYearAndMonth(input: ProductPerformanceInput!): ProductPerformanceResponse!
 }
 
 type Mutation {
   addServiceSales(input: ServicesSalesInput!): AddServicesSalesResponse!
 }
+
+input ProductPerformanceInput {
+    month: Int
+    year: Int
+    type: PerformanceType!
+}
+
 
 input MonthlyServiceSalesPerDayInput {
   year: Int!
