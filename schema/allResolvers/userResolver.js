@@ -93,8 +93,9 @@ const UserResolver = {
 
         contextValue.res.cookie('auth', authData, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          maxAge: 1000 * 60 * 60, // 1 hour
+          secure: true, // true for HTTPS
+          sameSite: 'None',
+          maxAge: 3600000 // 1 hour
         });
   
 

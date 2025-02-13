@@ -44,8 +44,8 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(
   cors({
+    origin: ['http://localhost:3000'],
     credentials: true,
-    origin: ['http://localhost:3000','https://repogen-4zb4arv42-majodequeens-projects.vercel.app/', 'http://localhost:4000/graphql'],
   })
 );
 
