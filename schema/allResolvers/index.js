@@ -3,10 +3,11 @@ const BusinessResolver = require('./businessResolver');
 const DebtsResolver = require('./debtsResolver');
 const ExpensesResolver = require('./expensesResolver');
 const SalesResolver = require('./salesResolver');
-const StockResolver = require('./stockResolver');
 const UserResolver = require('./userResolver');
 const ServicesSalesResolver = require('./serviceSalesResolver');
 const descriptionResolver = require('./servicesDescriptionsResolver');
+const StockResolver = require('./StockResolver');
+
 
 const types = [
   BusinessResolver,

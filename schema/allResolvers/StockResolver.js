@@ -1,5 +1,4 @@
 const { GraphQLError } = require('graphql');
-const Business = require('../../models/businessModel');
 const Stock = require('../../models/StockModel');
 
 const StockResolver = {
