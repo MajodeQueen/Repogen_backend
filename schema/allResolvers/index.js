@@ -6,7 +6,7 @@ const SalesResolver = require('./salesResolver');
 const UserResolver = require('./userResolver');
 const ServicesSalesResolver = require('./serviceSalesResolver');
 const descriptionResolver = require('./servicesDescriptionsResolver');
-const StockResolver = require('./StockResolver');
+const StockResolver = require('./theStockResolver');
 
 
 const types = [
