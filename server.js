@@ -54,6 +54,10 @@ app.use(async (req, res, next) => {
   try {
     const authCookie = req.cookies.authData;
 
+    console.log(req, '------req------')
+    console.log(req.cookies, '----req.cookies----')
+    console.log(authData, '-------authData------')
+
     // If no auth cookie is present, allow the request to proceed
     if (!authCookie) {
       console.log('No auth cookie found. Proceeding without authentication.');
