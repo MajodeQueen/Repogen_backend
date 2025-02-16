@@ -11,6 +11,7 @@ type LoginResponse {
   user: User
   businessId: String
   isAdmin:Boolean
+  token:String
 }
 
 type MeResponse {

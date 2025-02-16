@@ -91,12 +91,12 @@ const UserResolver = {
         const token = genAccessTokenToken(user._id)
         const authData = JSON.stringify({ token, BusinessId:businessId });
 
-        contextValue.res.cookie('auth', authData, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          maxAge: 1000 * 60 * 60, // 1 hour,
-          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-        });
+        // contextValue.res.cookie('auth', authData, {
+        //   httpOnly: true,
+        //   secure: process.env.NODE_ENV === 'production',
+        //   maxAge: 1000 * 60 * 60, // 1 hour,
+        //   sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+        // });
   
 
         return {
@@ -109,6 +109,8 @@ const UserResolver = {
           },
           businessId: businessId,
           isAdmin: userHasAdminAccess,
+          token: token
+
         };
       } catch (err) {
         // Always return a message, even in the error case

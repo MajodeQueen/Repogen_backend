@@ -44,7 +44,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: ['http://localhost:3000'],
+    origin: ['http://localhost:3000', 'http://localhost:4000/graphql'],
     credentials: true,
   })
 );
@@ -52,7 +52,7 @@ app.use(
 
 app.use(async (req, res, next) => {
   try {
-    const authCookie = req.cookies.auth;
+    const authCookie = req.cookies.authData;
 
     // If no auth cookie is present, allow the request to proceed
     if (!authCookie) {
