@@ -57,7 +57,7 @@ app.use(async (req, res, next) => {
 
     const authCookie = req.headers.cookie
 
-    console.log('.........Headers........', authHeaders)
+    console.log('.........Headers........', authCookie)
 
     if (!authCookie) {
       console.log('No auth cookie found. Proceeding without authentication.');
