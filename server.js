@@ -33,6 +33,7 @@ mongoose
 const app = express();
 const httpServer = http.createServer(app);
 
+
 // ApolloServer setup
 const server = new ApolloServer({
   typeDefs: allTypeDefs,
@@ -44,20 +45,20 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: '*',
+    origin: ['http://localhost:3000', 'http://localhost:4000/graphql'],
+    credentials: true, // Allow credentials (cookies)
   })
 );
 
 
 app.use(async (req, res, next) => {
   try {
-    const authCookie = req.cookies.authData;
+    // const authCookie = req.cookies.authData;
 
-    console.log(req, '------req------')
-    console.log(req?.cookies, '----req.cookies----')
-    console.log(req?.cookies?.authData, '-------authData------')
+    const authCookie = req.headers.cookie
 
-    // If no auth cookie is present, allow the request to proceed
+    console.log('.........Headers........', authHeaders)
+
     if (!authCookie) {
       console.log('No auth cookie found. Proceeding without authentication.');
       return next();
