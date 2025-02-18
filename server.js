@@ -57,6 +57,10 @@ app.use(async (req, res, next) => {
 
     const authCookie = req.headers.cookie
 
+    console.log('-----req----', req)
+
+    console.log('-----req.headers----', req.headers)
+
     console.log('.........Headers........', authCookie)
 
     if (!authCookie) {
