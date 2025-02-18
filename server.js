@@ -55,7 +55,7 @@ app.use(async (req, res, next) => {
   try {
     // const authCookie = req.cookies.authData;
 
-    const authCookie = req.headers.cookie
+    const authCookie = req.headers.Cookie
 
     console.log('-----req----', req)
 
