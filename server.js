@@ -52,7 +52,7 @@ app.use(bodyParser.json());
 
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'http://localhost:4000/graphql'],
+    origin: '*',
     credentials: true, // Allow cookies
     allowedHeaders: ['Content-Type', 'Authorization', 'userAuthData'], // ✅ Add userAuthData
   })
@@ -62,18 +62,7 @@ app.use(
 
 app.use(async (req, res, next) => {
   try {
-    // const authCookie = req.cookies.authData;
-
-    console.log('-----req.headers-1---', req.headers);
-    console.log('UserAuthData Header:', `${req.headers['userauthdata']}-->:End`); // Log the header
-
     const authCookie = req.headers['userauthdata'];
-
-    console.log('-----req----', req)
-
-    console.log('-----req.headers----', req.headers)
-
-    console.log('.........Headers........', authCookie)
 
     if (!authCookie) {
       console.log('No auth cookie found. Proceeding without authentication.');
