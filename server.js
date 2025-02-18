@@ -43,19 +43,31 @@ const server = new ApolloServer({
 
 app.use(cookieParser());
 app.use(bodyParser.json());
+// app.use(
+//   cors({
+//     origin: ['http://localhost:3000', 'http://localhost:4000/graphql'],
+//     credentials: true, // Allow credentials (cookies)
+//   })
+// );
+
 app.use(
   cors({
     origin: ['http://localhost:3000', 'http://localhost:4000/graphql'],
-    credentials: true, // Allow credentials (cookies)
+    credentials: true, // Allow cookies
+    allowedHeaders: ['Content-Type', 'Authorization', 'userAuthData'], // ✅ Add userAuthData
   })
 );
+
 
 
 app.use(async (req, res, next) => {
   try {
     // const authCookie = req.cookies.authData;
 
-    const authCookie = req.headers.Cookie
+    console.log('-----req.headers-1---', req.headers);
+    console.log('UserAuthData Header:', `${req.headers['userauthdata']}-->:End`); // Log the header
+
+    const authCookie = req.headers['userauthdata'];
 
     console.log('-----req----', req)
 
