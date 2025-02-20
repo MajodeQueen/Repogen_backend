@@ -27,12 +27,24 @@ type CreateBusinessResponse {
   business: Business
 }
 
+type BusinessAccessResponse {
+ success: Boolean!
+ message: String!
+ businesses:[Business!]
+}
+
 type Query {
   getLoggedInBusinessInfo: GetBusinessInfoResponse!
+  getAllBusinessesAssociatedWithUser(input:businessAccessInput!):BusinessAccessResponse!
 }
 
 type Mutation {
   createBusinessAccount(input: CreateBusinessInput!): CreateBusinessResponse!
+}
+
+
+input businessAccessInput{
+ email:String!
 }
 
 input CreateBusinessInput {

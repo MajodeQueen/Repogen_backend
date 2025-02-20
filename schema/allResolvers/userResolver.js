@@ -1,9 +1,8 @@
 const genAccessTokenToken = require('../../generateTokens');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const User = require('../../models/userModel');
 const Business = require('../../models/businessModel');
-const { GraphQLError } = require('graphql');
+
 
 const UserResolver = {
   Mutation: {
@@ -43,10 +42,9 @@ const UserResolver = {
       }
     },
 
-    login: async (_, { input },contextValue) => {
+    login: async (_, { input }) => {
       try {
-        const { email, password, businessId } = input;
-        const business = await Business.findById(businessId);
+        const { email, password } = input;
         const user = await User.findOne({ email });
 
         if (!user) {
@@ -57,39 +55,45 @@ const UserResolver = {
           };
         }
 
-        if (!business) {
-          return {
-            success: false,
-            message: 'Business ID is invalid', // Provide a fallback message
-            user: null, // Return null for user in case of error
-          };
-        }
-
         const passwordValidity = await bcrypt.compare(password, user.password);
         if (!passwordValidity) {
           return {
             success: false,
             message: 'Invalid password', // Provide a fallback message
-            user: null, // Return null for user in case of error
           };
         }
+        return {
+          success: true,
+          message: 'Login successful', // Ensure message is always set
+        };
+      } catch (err) {
+        // Always return a message, even in the error case
+        return {
+          success: false,
+          message: err.message || 'Internal server error', // Provide a fallback message
+        };
+      }
+    },
 
+
+    chooseBusinessToAccess: async (_, { input }, contextValue) => {
+      const { businessId, email } = input
+      const business = await Business.findById(businessId);
+      const user = await User.findOne({ email });
+
+      try {
         const userHasAdminAccess = business.admins.includes(user._id);
         const userHasEditorAccess = business.editors.includes(user._id);
 
         if (!userHasAdminAccess && !userHasEditorAccess) {
-          throw new GraphQLError(
-            'You do not have access to this business account',
-            {
-              extensions: {
-                code: 'UNAUTENTICATED',
-              },
-            }
-          );
+          return {
+            success: false,
+            message: 'You do not have access to this business account', // Ensure message is always set
+            user: null,
+          };
         }
-
         const token = genAccessTokenToken(user._id)
-        const authData = JSON.stringify({ token, BusinessId:businessId });
+        const authData = JSON.stringify({ token, BusinessId: businessId });
 
         contextValue.res.cookie('authData', authData, {
           httpOnly: true,
@@ -97,11 +101,10 @@ const UserResolver = {
           maxAge: 1000 * 60 * 60, // 1 hour,
           sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
         });
-  
 
         return {
           success: true,
-          message: 'Login successful', // Ensure message is always set
+          message: 'Access granted', // Ensure message is always set
           user: {
             _id: user._id,
             username: user.username,
@@ -113,15 +116,17 @@ const UserResolver = {
 
         };
       } catch (err) {
-        // Always return a message, even in the error case
         return {
           success: false,
           message: err.message || 'Internal server error', // Provide a fallback message
           user: null, // Return null for user in case of error
         };
+
       }
     },
-    logout: (parent, args, contextValue) => {
+
+
+    logout: (__, contextValue) => {
       // Clear both cookies
       contextValue.res.clearCookie('auth');
       return {
@@ -163,7 +168,6 @@ const UserResolver = {
         };
       }
     },
-    
   },
 };
 

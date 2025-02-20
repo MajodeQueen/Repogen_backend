@@ -82,6 +82,38 @@ const BusinessResolver = {
         };
       }
     },
+
+    getAllBusinessesAssociatedWithUser: async (_, { input }) => {
+      try {
+        const { email } = input
+        const actualUser = await User.findOne({ email });
+        if (!actualUser) {
+          return {
+            success: false,
+            message: 'User not found',
+            businesses: null
+          };
+        }
+        // Fetch businesses where the user is either an admin or an editor
+        const businesses = await Business.find({
+          $or: [
+            { admins: actualUser._id },
+            { editors: actualUser._id }
+          ]
+        });
+        return {
+          success: true,
+          message: 'User data retrieved successfully',
+          businesses: businesses
+        };
+      } catch (err) {
+        return {
+          success: false,
+          message: err.message || 'Internal server error',
+          businesses: null
+        };
+      }
+    },
   },
 };
 

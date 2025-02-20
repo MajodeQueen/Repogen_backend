@@ -8,6 +8,11 @@ type User {
 type LoginResponse {
   success: Boolean!
   message: String!
+}
+
+type chooseBusinessToAccessResponse {
+  success: Boolean!
+  message: String!
   user: User
   businessId: String
   isAdmin:Boolean
@@ -21,10 +26,13 @@ type MeResponse {
   adminAccess:Boolean
 }
 
+
+
 type Mutation {
   signup(input: SignupInput!): SignupResponse!
   login(input: LoginInput!): LoginResponse!
   logout: LogoutResponse!
+  chooseBusinessToAccess(input:chooseBusinessInput):chooseBusinessToAccessResponse!
 }
 
 type Query {
@@ -37,10 +45,15 @@ input SignupInput {
   password: String!
 }
 
+
+input chooseBusinessInput{
+  email: String!
+  businessId: String!
+}
+
 input LoginInput {
   email: String!
   password: String!
-  businessId: String!
 }
 
 type SignupResponse {
