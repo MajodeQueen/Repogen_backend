@@ -33,6 +33,11 @@ type BusinessAccessResponse {
  businesses:[Business!]
 }
 
+type addEditorResponse{
+success: Boolean!
+ message: String!
+}
+
 type Query {
   getLoggedInBusinessInfo: GetBusinessInfoResponse!
   getAllBusinessesAssociatedWithUser(input:businessAccessInput!):BusinessAccessResponse!
@@ -40,11 +45,17 @@ type Query {
 
 type Mutation {
   createBusinessAccount(input: CreateBusinessInput!): CreateBusinessResponse!
+  addBusinessEditor(input:addEditorInput!):addEditorResponse!
+}
+
+
+input addEditorInput{
+  email:String!
 }
 
 
 input businessAccessInput{
- email:String!
+  email:String!
 }
 
 input CreateBusinessInput {
@@ -53,7 +64,6 @@ input CreateBusinessInput {
   aspects: [String]!
   email: String!
 }
-
 
 `;
 

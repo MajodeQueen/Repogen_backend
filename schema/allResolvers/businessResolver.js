@@ -42,6 +42,42 @@ const BusinessResolver = {
         };
       }
     },
+    addBusinessEditor: async (_, { input }, contextValue) => {
+      const { business } = contextValue
+      const { email } = input
+      try {
+        // Find the business by ID
+        const actualBusiness = await Business.findById(business.id);
+        if (!actualBusiness) {
+          throw new ApolloError('Business not found', 'BUSINESS_NOT_FOUND');
+        }
+        // Check if user is already an editor
+        const user = await User.findOne({ email });
+        if (!user) {
+          return {
+            success: false,
+            message: 'User email does not exist',
+          };
+        }
+        if (actualBusiness.editors.includes(user)) {
+          return {
+            success: false,
+            message: 'User is already an editor',
+          };
+        }
+
+        // Add the user to the editors list
+        actualBusiness.editors.push(user);
+        await actualBusiness.save();
+
+        return {
+          success: true,
+          message: 'Editor added',
+        };
+      } catch (error) {
+        throw new ApolloError(error.message, 'INTERNAL_SERVER_ERROR');
+      }
+    },
   },
   Query: {
     getLoggedInBusinessInfo: async (_, __, contextValue) => {
