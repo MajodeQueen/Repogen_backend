@@ -48,15 +48,15 @@ const SalesResolver = {
           }
 
           // 4b. Validate stock quantity
-          if (quantity <= 0) {
+          if (quantity.amount <= 0) {
             throw new GraphQLError('Quantity must be greater than zero', {
               extensions: { code: 'INVALID_QUANTITY' },
             });
           }
 
-          if (product.quantity < quantity) {
+          if (product.quantity < quantity.amount) {
             throw new GraphQLError(
-              `Insufficient stock for ${product.name}. Available: ${product.quantity}, Requested: ${quantity}`,
+              `Insufficient stock for ${product.name}. Available: ${product.quantity + product.quantityUnit}, Requested: ${quantity.amount + quantity.unit}`,
               { extensions: { code: 'INSUFFICIENT_STOCK' } }
             );
           }
@@ -66,6 +66,7 @@ const SalesResolver = {
             business,
             customerName,
             quantity,
+            quantityUnit: quantity.unit,
             productDetails: product,
             amount: price,
             paymentMode,
@@ -76,7 +77,7 @@ const SalesResolver = {
           createdSales.push(savedSale);
 
           // 6. Update product stock quantity
-          product.quantity -= quantity;
+          product.quantity -= quantity.amount;
           await product.save();
         }
 

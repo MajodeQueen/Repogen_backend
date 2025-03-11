@@ -9,6 +9,7 @@ const ServiceSalesTypeDef = require('./serviceSalesTypeDef');
 const descriptionTypeDef = require('./serviceDescriptionsDef');
 const RecentTransactionTypeDef = require('./recentTransactionTypeDef');
 const ReportsTypeDef = require('./reportsTypeDef');
+const quantityUnitsTypeDef = require('./quantityUnitsTypeDef');
 
 const allTypeDefs = mergeTypeDefs([
   SalesTypeDef,
@@ -20,7 +21,8 @@ const allTypeDefs = mergeTypeDefs([
   ServiceSalesTypeDef,
   descriptionTypeDef,
   RecentTransactionTypeDef,
-  ReportsTypeDef
+  ReportsTypeDef,
+  quantityUnitsTypeDef
 ]);
 
 module.exports = allTypeDefs;

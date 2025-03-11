@@ -5,6 +5,7 @@ const ServicesalesSchema = new mongoose.Schema(
         serviceName: String,
         date: String,
         quantity: Number,
+        quantityUnit: String,
         amount: Number,
         business: {
             type: mongoose.Schema.Types.ObjectId,

@@ -5,6 +5,7 @@ const SalesSchema = new mongoose.Schema(
     customerName: String,
     date: String,
     quantity: Number,
+    quantityUnit: String,
     productDetails: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Stock',

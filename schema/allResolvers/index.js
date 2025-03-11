@@ -9,6 +9,7 @@ const descriptionResolver = require('./servicesDescriptionsResolver');
 const StockResolver = require('./theStockResolver');
 const RecentTransactionsResolver = require('./recentTransactionsResolver');
 const ReportsResolver = require('./reportsResolver');
+const quantityUnitsResolver = require('./quantityUnitsResolver');
 
 
 const types = [
@@ -21,7 +22,8 @@ const types = [
   ServicesSalesResolver,
   descriptionResolver,
   RecentTransactionsResolver,
-  ReportsResolver
+  ReportsResolver,
+  quantityUnitsResolver
 ];
 
 const allResolvers = mergeResolvers(types);

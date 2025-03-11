@@ -4,6 +4,7 @@ const StockSchema = new mongoose.Schema(
   {
     name: String,
     quantity: Number,
+    quantityUnit: String,
     costPrice: Number,
     sellPrice: Number,
     date: String,

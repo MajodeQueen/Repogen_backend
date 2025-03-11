@@ -4,6 +4,7 @@ type ServicesSalesData {
   serviceName: String
   date: String
   quantity: Float
+  quantityUnit: String
   amount: Float
   paymentMode: String
 }
@@ -141,8 +142,13 @@ input ServiceSalesStatsInput {
  year:Float!
 }
 
+input QuantityInput {
+  amount: Float!
+  unit: String!
+}
+
 input SingleServiceInput {
-  quantity: Float!
+  quantity: QuantityInput
   serviceName: String!
   salePrice: Float!
   paymentMode:String!

@@ -3,6 +3,7 @@ type StockData {
   _id: ID!
   name: String,
   quantity: Float
+  quantityUnit: String
   costPrice: Float
   sellPrice: Float
   date: String,
@@ -29,18 +30,25 @@ type Mutation {
   updateStock(input:UpdateStockInput!):AddStockResponse!
 }
 
+input QuantityInput {
+  amount: Float!
+  unit: String!
+}
+
 input UpdateStockInput {
   stockId: String!
-  quantity: Float
+  quantity: QuantityInput!
   costPrice: Float
 }
+
+
 
 input SingleStockInput {
 costPrice:Float
 name:String
 price:Float
 productId:String
-quantity:Float
+quantity:QuantityInput
 }
 
 input StockInput {

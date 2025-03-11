@@ -4,6 +4,7 @@ type SalesData {
   customerName: String
   date: String
   quantity: Float
+  quantityUnit: String
   productDetails: Stock
   amount: Float
   paymentMode: String
@@ -13,6 +14,7 @@ type Stock {
   _id: ID!
   name: String
   quantity: Float
+  quantityUnit: String
   costPrice: Float
   sellPrice: Float
   date: String
@@ -68,9 +70,14 @@ input SalesstatsInput {
  year:Float!
 }
 
+input QuantityInput {
+  amount: Float!
+  unit: String!
+}
+
 input SingleProductInput {
  productId: String!
-  quantity: Float!
+  quantity: QuantityInput!
   price: Float!
 }
 

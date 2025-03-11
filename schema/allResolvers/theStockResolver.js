@@ -26,7 +26,7 @@ const StockResolver = {
         for (const product of stockItems) {
           const { costPrice, name, price, productId, quantity } = product;
 
-          if (quantity <= 0) {
+          if (quantity.amount <= 0) {
             throw new GraphQLError('Quantity must be greater than zero', {
               extensions: { code: 'INVALID_QUANTITY' },
             });
@@ -36,7 +36,8 @@ const StockResolver = {
             // Create new stock when productId is empty
             const newStock = new Stock({
               name,
-              quantity,
+              quantity: quantity.amount,
+              quantityUnit: quantity.unit,
               costPrice,
               sellPrice: price,
               date: parsedDate.toISOString(),
@@ -59,7 +60,8 @@ const StockResolver = {
               // If prices differ, create a new stock entry
               const newStock = new Stock({
                 name,
-                quantity,
+                quantity: quantity.amount,
+                quantityUnit: quantity.unit,
                 costPrice,
                 sellPrice: price,
                 date: parsedDate.toISOString(),
@@ -70,7 +72,7 @@ const StockResolver = {
               stockAdded.push(savedStock);
             } else {
               // If prices are the same, update the existing stock quantity
-              existingStock.quantity += quantity;
+              existingStock.quantity += quantity.amount;
               const updatedStock = await existingStock.save();
               stockAdded.push(updatedStock);
             }
@@ -139,7 +141,7 @@ const StockResolver = {
         } else {
           // Update the existing stock if the costPrice is the same
           if (quantity !== undefined) {
-            stock.quantity = quantity;
+            stock.quantity = quantity.amount;
           }
           // Save the updated stock
           const updatedStock = await stock.save();

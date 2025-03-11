@@ -34,7 +34,7 @@ const ServicesSalesResolver = {
                 for (const entry of saleEntries) {
                     const { serviceName, quantity, salePrice, paymentMode } = entry;
 
-                    if (!serviceName || quantity <= 0 || !salePrice || !paymentMode) {
+                    if (!serviceName || quantity.amount <= 0 || !salePrice || !paymentMode) {
                         throw new GraphQLError('Invalid sale entry data', {
                             extensions: { code: 'INVALID_INPUT' },
                         });
@@ -42,7 +42,8 @@ const ServicesSalesResolver = {
                     const newSale = new ServiceSales({
                         business,
                         serviceName,
-                        quantity,
+                        quantity: quantity.amount,
+                        quantityUnit: quantity.unit,
                         amount: salePrice,
                         paymentMode,
                         date: parsedDate.toISOString(),
@@ -522,6 +523,7 @@ const ServicesSalesResolver = {
         //     }
         // }
     }
-};
+}
+    ;
 
 module.exports = ServicesSalesResolver;
